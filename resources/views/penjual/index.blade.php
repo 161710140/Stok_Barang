@@ -109,7 +109,7 @@
                   console.log(data);
                   swal({
                       title:'Success Tambah!',
-                      text:'Data Berhasil Disimpan',
+                      text:data.message,
                       type:'success',
                       timer:'2000'
                     });

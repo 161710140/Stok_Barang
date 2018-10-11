@@ -157,7 +157,10 @@ class PenjualanController extends Controller
     
         $baru->Stok =  $baru->Stok + $a->Jumlah;
         $baru->save(); 
-        return response()->json(['success'=>true]);
+        return response()->json([
+                'success'=>true,
+                'message'=>'Berhasil!'
+            ]);
     }
 
     /**
