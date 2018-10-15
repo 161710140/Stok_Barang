@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\DataTables;
 use App\Barang;
-
+use App\Kategori;
 class PenjualanController extends Controller
 {
     public function json()
@@ -16,6 +16,9 @@ class PenjualanController extends Controller
         return Datatables::of($jual)
         ->addColumn('jual', function($jual){
             return $jual->barangjual->Merk;
+        })
+         ->addColumn('kategoriname', function($jual){
+            return $jual->Kategori->Nama_Kategori;
         })
         ->addColumn('formatharga', function($jual){
             return number_format($jual->Total_Bayar,2,',','.');
@@ -27,7 +30,7 @@ class PenjualanController extends Controller
             <i class="glyphicon glyphicon-remove"></i> Delete</a>';
 
             })
-        ->rawColumns(['action','jual','formatharga'])->make(true);
+        ->rawColumns(['action','jual','formatharga','kategoriname'])->make(true);
     }
     /**
      * Display a listing of the resource.
@@ -38,7 +41,8 @@ class PenjualanController extends Controller
     {
         $barang = Barang::all();
         $jual = Penjualan::all();
-        return view('penjual.index', compact('barang','jual'));
+        $kategori = Kategori::all();
+        return view('penjual.index', compact('barang','jual','kategori'));
     }
 
     /**
@@ -66,6 +70,7 @@ class PenjualanController extends Controller
             'Tanggal_Jual' => 'required',
             'Nama_Pelanggan' => 'required',
             'Barang_id' => 'required',
+            'Kategori_id' => 'required',
             'Jumlah' => "required|numeric|max:$Stok|min:1",
             // 'Total_Bayar' => 'required',
         ],[
@@ -73,6 +78,7 @@ class PenjualanController extends Controller
             'Tanggal_Jual.required' => ':Attribute Harus Diisi',
             'Nama_Pelanggan.required' => ':Attribute Tidak Boleh Kosong',
             'Barang_id.required' => ':Attribute Harus Diisi',
+            'Kategori_id.required' => ':Attribute Harus Diisi',
             'Jumlah.required' => ':Attribute Diisi',
             'Jumlah.max' => ":Attribute tidak boleh melebihi jumlah stok yaitu ".$Stok,
             // 'Total_Bayar.required' => 'Harus Diisi',
@@ -82,6 +88,7 @@ class PenjualanController extends Controller
         $data->Tanggal_Jual = $request->Tanggal_Jual;
         $data->Nama_Pelanggan = $request->Nama_Pelanggan;
         $data->Barang_id = $request->Barang_id;
+        $data->Kategori_id = $request->Kategori_id;
         $data->Jumlah = $request->Jumlah;
         $total = $request->Jumlah;
         $baru = Barang::where('id', $data->Barang_id)->first();
@@ -89,7 +96,11 @@ class PenjualanController extends Controller
         $data->save();
         $baru->Stok = $baru->Stok - $total;
         $baru->save();
-        return response()->json(['success'=>true]);
+        return response()->json([
+            'success'=>true,
+            'message'=>'Berhasil!'
+
+        ]);
     }
 
     /**
@@ -129,38 +140,67 @@ class PenjualanController extends Controller
             'Tanggal_Jual' => 'required',
             'Nama_Pelanggan' => 'required',
             'Barang_id' => 'required',
-            'Jumlah' => 'required',
+            'Jumlah' => 'required|not_in:0',
             // 'Total_Bayar' => 'required',
         ],[
-            'Kode_Penjualan.required' => 'Kode Penjualan Tidak Boleh Kosong',
-            'Tanggal_Jual.required' => 'Harus Diisi',
-            'Nama_Pelanggan.required' => 'Nama Pelanggan Tidak Boleh Kosong',
-            'Barang_id.required' => 'Harga Harus Diisi',
-            'Jumlah.required' => 'Jumlah Harus Diisi',
+            'Kode_Penjualan.required' => ':Attribute Tidak Boleh Kosong',
+            'Tanggal_Jual.required' => ':Attribute Harus Diisi',
+            'Nama_Pelanggan.required' => ':Attribute Tidak Boleh Kosong',
+            'Barang_id.required' => ':Attribute Harus Diisi',
+            'Jumlah.required' => ':Attribute Harus Diisi',
+            'Jumlah.not_in'=> ':Attribute tidak boleh 0'
             // 'Total_Bayar.required' => 'Harus Diisi',
         ]);
         $data = Penjualan::find($id);
         $data->Kode_Penjualan = $request->Kode_Penjualan;
         $data->Tanggal_Jual = $request->Tanggal_Jual;
         $data->Nama_Pelanggan = $request->Nama_Pelanggan;
+        $data->Kategori_id = $request->Kategori_id;
         $data->Barang_id = $request->Barang_id;
-        $data->Jumlah = $request->Jumlah;
-        
-        $a = Penjualan::find($id);
-        $a->Jumlah = $a->Jumlah - $request->Jumlah;
-        $a->save();
 
         $baru = Barang::where('id', $data->Barang_id)->first();
-        $Stok = $baru->Stok;
-        $data->Total_Bayar = $data->Jumlah*$baru->Harga_Satuan;
-        $data->save();
-    
-        $baru->Stok =  $baru->Stok + $a->Jumlah;
-        $baru->save(); 
-        return response()->json([
+        if ($request->Jumlah <= $baru->Stok) 
+        {
+             $data->Jumlah = $request->Jumlah;
+             $Jumlah = Penjualan::find($id);
+             $Jumlah->Jumlah = $Jumlah->Jumlah - $request->Jumlah;
+
+             $stok = Barang::where('id', $data->Barang_id)->first();
+             $stok->Stok =  $stok->Stok + $Jumlah->Jumlah;
+             $stok->save();
+             $Jumlah->save();
+             $data->Total_Bayar = $data->Jumlah*$baru->Harga_Satuan;
+             $data->save(); 
+
+            return response()->json([
                 'success'=>true,
-                'message'=>'Berhasil!'
+                'message'=>'Data Berhasil Di Update!'
+            ]);   
+        }
+        elseif ($request->Jumlah >= $baru->Stok) 
+        {
+             
+             $stok = Barang::where('id', $data->Barang_id)->first();
+             $stok->Stok =  ($stok->Stok + $data->Jumlah) - $request->Jumlah;
+             $stok->save();
+             $data->Jumlah = $request->Jumlah;
+
+             $Jumlah = Penjualan::find($id);
+             $Jumlah->Jumlah = $Jumlah->Jumlah - $request->Jumlah;
+
+             $Jumlah->save();
+             $data->Total_Bayar = $data->Jumlah*$baru->Harga_Satuan;
+             $data->save(); 
+             return response()->json([
+                'success'=>true,
+                'message'=>'Data Berhasil Di Update!'
+                 ]); 
+        }
+            return response()->json([
+                'error'=>true,
             ]);
+        
+        // $baru = Barang::where('id', $data->Barang_id)->first();
     }
 
     /**

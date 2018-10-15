@@ -39,3 +39,11 @@ Route::post('storejual', 'PenjualanController@store');
 Route::post('jual/edit/{id}', 'PenjualanController@update');
 Route::get('jual/getedit/{id}','PenjualanController@edit');
 Route::get('ajaxdata/removedatajual','PenjualanController@removedata')->name('ajaxdata.removedatajual');
+
+//Kategori
+Route::resource('kategori','KategoriController');
+Route::get('json_kate','KategoriController@json');
+Route::post('storekategori', 'KategoriController@store');
+Route::post('kat/edit/{id}', 'KategoriController@update');
+Route::get('kat/getedit/{id}','KategoriController@edit');
+Route::get('ajaxdata/removedatakat','KategoriController@removedata')->name('ajaxdata.removedatakat');

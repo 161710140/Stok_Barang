@@ -48,6 +48,12 @@
                   <p>Penjualan</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="kategori" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>Kategori</p>
+                </a>
+              </li>
             </ul>
           </li>
           <!-- <li class="nav-item">

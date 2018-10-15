@@ -26,67 +26,52 @@
               <h1 class="card-title">Data Table</h1>
               <button type="button" name="add" id="Tambah" class="btn btn-primary pull-right" style="margin-left: 960px; margin-top: 10px; margin-bottom: 10px">Add Data</button>
             </div>
-              <div class="panel panel-body">
-                 <table id="jual_table" class="table table-bordered" style="width:100%">
-                    <thead>
-                       <tr>
-                          <th>Kode Penjualan</th>
-                          <th>Tanggal Jual</th>
-                          <th>Nama Pelanggan</th>
-                          <th>Barang</th>
-                          <th>Kategori Barang</th>
-                          <th>Jumlah</th>
-                          <th>Total Harga</th>
-                          <th>Action</th>
-                       </tr>
-                    </thead>
-                 </table>
-              </div>
+            <div class="panel panel-body">
+               <table id="kat_table" class="table table-bordered" style="width:100%">
+                  <thead>
+                     <tr>
+                        <th>Nama Kategori</th>
+                        <th>Action</th>
+                     </tr>
+                  </thead>
+               </table>
             </div>
+          </div>
         </div>
       </div>
     </section>
   </div>
-  @endsection
-  @push('scripts')
+@endsection
+@push('scripts')
+@include('Kategori.modal')
+<script type="text/javascript">
+  $(document).ready(function() {
 
-  @include('penjual.modaljual')
-      <script type="text/javascript">
-         $(document).ready(function() {
+    $('#kat_table').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: 'json_kate',
+      columns:[
+            { data: 'Nama_Kategori', name: 'Nama_Kategori' },
+            { data: 'action', orderable: false, searchable: false }
+        ],
+      });
+    $('#Tambah').click(function(){
 
-          $('#jual_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '/jsonjual',
-            columns:[
-                  { data: 'Kode_Penjualan', name: 'Kode_Penjualan' },
-                  { data: 'Tanggal_Jual', name: 'Tanggal_Jual' },
-                  { data: 'Nama_Pelanggan', name: 'Nama_Pelanggan'},
-                  { data: 'jual' },
-                  { data: 'kategoriname' },
-                  { data: 'Jumlah', name: 'Jumlah' },
-                  { data: 'formatharga', name: 'formatharga'},
-                  { data: 'action', orderable: false, searchable: false }
-              ],
-            });
-
-           $('#Tambah').click(function(){
-
-            $('#jualModal').modal('show');
+            $('#Modal').modal('show');
             $('.modal-title').text('Add Data');
             $('#aksi').val('Tambah');
-            $('.select-dua').select2();
             state = "insert";
 
             });
 
-           $('#jualModal').on('hidden.bs.modal',function(e){
-            $(this).find('#jual_form')[0].reset();
+           $('#Modal').on('hidden.bs.modal',function(e){
+            $(this).find('#form')[0].reset();
             $('span.has-error').text('');
             $('.form-group.has-error').removeClass('has-error');
             });
 
-          $('#jual_form').submit(function(e){
+          $('#form').submit(function(e){
             $.ajaxSetup({
               header: {
                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
@@ -100,7 +85,7 @@
 
               $.ajax({
                 type: "POST",
-                url: "{{url ('/storejual')}}",
+                url: "{{url ('/storekategori')}}",
                 data: new FormData(this),
                // data: $('#student_form').serialize(),
                 contentType: false,
@@ -115,8 +100,8 @@
                       type:'success',
                       timer:'2000'
                     });
-                  $('#jualModal').modal('hide');
-                  $('#jual_table').DataTable().ajax.reload();
+                  $('#Modal').modal('hide');
+                  $('#kat_table').DataTable().ajax.reload();
                 },
 
                 //menampilkan validasi error
@@ -146,7 +131,7 @@
                //mengupdate data yang telah diedit
               $.ajax({
                 type: "POST",
-                url: "{{url ('jual/edit')}}"+ '/' + $('#id').val(),
+                url: "{{url ('kat/edit')}}"+ '/' + $('#id').val(),
                 // data: $('#student_form').serialize(),
                 data: new FormData(this),
                 contentType: false,
@@ -154,14 +139,14 @@
                 dataType: 'json',
                 success: function (data){
                   console.log(data);
-                  $('#jualModal').modal('hide');
+                  $('#Modal').modal('hide');
                   swal({
                     title: 'Update Success',
                     text: data.message,
                     type: 'success',
                     timer: '3500'
                   })
-                  $('#jual_table').DataTable().ajax.reload();
+                  $('#kat_table').DataTable().ajax.reload();
                 },
                 error: function (data){
                     swal({
@@ -194,7 +179,7 @@
             var bebas = $(this).data('id');
             $('#form_tampil').html('');
             $.ajax({
-              url:"{{url('jual/getedit')}}" + '/' + bebas,
+              url:"{{url('kat/getedit')}}" + '/' + bebas,
               method:'get',
               data:{id:bebas},
               dataType:'json',
@@ -203,24 +188,16 @@
                 state = "update";
 
                 $('#id').val(data.id);
-                $('#Kode_Penjualan').val(data.Kode_Penjualan);
-                $('#Tanggal_Jual').val(data.Tanggal_Jual);
-                $('#Nama_Pelanggan').val(data.Nama_Pelanggan);
-                $('#Barang_id').val(data.Barang_id);
-                $('#Kategori_id').val(data.Kategori_id);
-                $('#Jumlah').val(data.Jumlah);
-                $('.select-dua').select2();
-
-
-                  $('#jualModal').modal('show');
-                  $('#aksi').val('Simpan');
-                  $('.modal-title').text('Edit Data');
+                $('#Nama_Kategori').val(data.Nama_Kategori);
+                $('#Modal').modal('show');
+                $('#aksi').val('Simpan');
+                $('.modal-title').text('Edit Data');
                 }
               });
           });
 
-          $(document).on('hide.bs.modal','#jualModal', function() {
-            $('#jual_table').DataTable().ajax.reload();
+          $(document).on('hide.bs.modal','#Modal', function() {
+            $('#kat_table').DataTable().ajax.reload();
           });
 
           //proses delete data
@@ -229,7 +206,7 @@
               if (confirm("Yakin Dihapus ?")) {
 
                 $.ajax({
-                  url: "{{route('ajaxdata.removedatajual')}}",
+                  url: "{{route('ajaxdata.removedatakat')}}",
                   method: "get",
                   data:{id:bebas},
                   success: function(data){
@@ -239,7 +216,7 @@
                       type:'success',
                       timer:'1500'
                     });
-                    $('#jual_table').DataTable().ajax.reload();
+                    $('#kat_table').DataTable().ajax.reload();
                   }
                 })
               }
@@ -253,6 +230,6 @@
                 return false;
               }
             });
-          });
-      </script>
-      @endpush
+  });
+</script>
+@endpush

@@ -6,7 +6,6 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Data Tables</h1>
           </div>
           <!-- <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -34,6 +33,7 @@
                         <th>Nama Suplier</th>
                         <th>Nama Barang</th>
                         <th>Merk Barang</th>
+                        <th>Kategori Barang</th>
                         <th>Harga Satuan</th>
                         <th>Stok</th>
                         <th>Action</th>
@@ -62,6 +62,7 @@
             { data: 'supliername' },
             { data: 'Nama_Barang', name: 'Nama_Barang' },
             { data: 'Merk', name: 'Merk' },
+            { data: 'kategoriname' },
             { data: 'Harga_Satuan', name: 'Harga_Satuan' },
             { data: 'Stok', name: 'Stok'},
             { data: 'action', orderable: false, searchable: false }
@@ -195,6 +196,7 @@
 
           $('#id').val(data.id);
           $('#suplier_id').val(data.suplier_id);
+          $('#Kategori_id').val(data.Kategori_id);
           $('#Nama_Barang').val(data.Nama_Barang);
           $('#Merk').val(data.Merk);
           $('#Harga_Satuan').val(data.Harga_Satuan);

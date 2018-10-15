@@ -12,4 +12,9 @@ class Penjualan extends Model
     public function barangjual(){
     	return $this->belongsTo('App\Barang', 'Barang_id');
     }
+
+    public function Kategori()
+    {
+    	return $this->belongsTo('App\Kategori','Kategori_id');
+    }
 }
