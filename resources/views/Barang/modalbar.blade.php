@@ -16,9 +16,8 @@
                <div class="modal-body">
                   {{csrf_field()}} {{ method_field('POST') }}
                   <span id="form_tampil"></span>
-               
+                  <input type="hidden" name="id" id="id">
                   <div class="form-group {{ $errors->has('suplier_id') ? 'has-error' : '' }}">
-                     <input type="hidden" name="id" id="id">
 
                      <label>Nama Suplier</label>
                      <select class="form-control select-dua" name="suplier_id" id="suplier_id" style="width: 468px">
@@ -56,6 +55,7 @@
                   	<input type="number" id="Stok" name="Stok" class="form-control" placeholder="jumlah stok barang">
                   	<span class="help-block has-error Stok_error"></span>
                   </div>        
+                  <div class="form-group {{ $errors->has('parent_id') ? 'has-error' : '' }}">
                   <label>Nama Kategori</label>
                      <select class="form-control select-dua" name="Kategori_id" id="Kategori_id" style="width: 468px">
                         <option disabled selected>Pilih Kategori</option>
@@ -68,7 +68,22 @@
                         <strong>{{$errors->first('Kategori_id')}}</strong>
                      </span>
                      @endif
-                  </div>          
+                  </div>    
+                   <div class="form-group {{ $errors->has('parent_id') ? 'has-error' : '' }}">
+
+                     <label>Nama Sub Kategori</label>
+                     <select class="form-control select-dua" name="parent_id" id="parent_id" style="width: 468px">
+                        <option disabled selected>Pilih Suplier</option>
+                        @foreach($kategori as $data)
+                        <option value="{{$data->parent_id}}">{{$data->Nama_Kategori}}</option>
+                        @endforeach
+                     </select>
+                     @if ($errors->has('parent_id'))
+                     <span class="help-block has-error Nama_error">
+                        <strong>{{$errors->first('parent_id')}}</strong>
+                     </span>
+                     @endif
+                  </div>      
 				<div class="modal-footer">
 					<input type="submit" name="submit" id="aksi" value="Tambah" class="btn btn-info" />
 					<input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal"/>

@@ -30,7 +30,9 @@
                <table id="kat_table" class="table table-bordered" style="width:100%">
                   <thead>
                      <tr>
-                        <th>Nama Kategori</th>
+                        <th>Id</th>
+                        <th>Main Kategori</th>
+                        <th>Id Kategori</th>
                         <th>Action</th>
                      </tr>
                   </thead>
@@ -52,7 +54,9 @@
       serverSide: true,
       ajax: 'json_kate',
       columns:[
+            { data: 'id', name: 'id' },
             { data: 'Nama_Kategori', name: 'Nama_Kategori' },
+            { data: 'parent_id', name: 'parent_id' },
             { data: 'action', orderable: false, searchable: false }
         ],
       });

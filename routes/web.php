@@ -14,6 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('subcat',function(){
+	return App\Kategori::with('childs')
+	->where('parent_id',0)
+	->get();
+});
 
 //suplier
 Route::get('/jsondata','SuplierController@json');

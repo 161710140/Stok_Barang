@@ -23,6 +23,10 @@
                      <input type="text" name="Nama_Kategori" id="Nama_Kategori" class="form-control" placeholder="Masukan Nama Kategori">
                      <span class="help-block has-error Nama_Kategori_error"></span>
                   </div>
+                  <div class="form-group">
+                     <label>Id Kategori</label>
+                     <input type="text" name="parent_id" id="parent_id" class="form-control" placeholder="Masukan Nama Kategori">
+                     <span class="help-block has-error parent_id_error"></span>
 				<div class="modal-footer">
 					<input type="submit" name="submit" id="aksi" value="Tambah" class="btn btn-info" />
 					<input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal"/>
@@ -31,6 +35,7 @@
             </div>
          </div>
       </div>
-
+      <script type="text/javascript">
+      </script>
 </body>
 </html>
