@@ -58,7 +58,6 @@ class KategoriController extends Controller
         ]);
         $data = new Kategori;
         $data->Nama_Kategori = $request->Nama_Kategori;
-        $data->parent_id = $request->parent_id;
         $data->save();
         return response()->json(['success'=>true]);
     }
@@ -102,7 +101,6 @@ class KategoriController extends Controller
         ]);
         $data = Kategori::findOrFail($id);
         $data->Nama_Kategori = $request->Nama_Kategori;
-        $data->parent_id = $request->parent_id;
         $data->save();
         return response()->json(['success'=>true]);
     }

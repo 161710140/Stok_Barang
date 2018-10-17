@@ -54,6 +54,12 @@
                   <p>Kategori</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="subkategori" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>subkategori</p>
+                </a>
+              </li>
             </ul>
           </li>
           <!-- <li class="nav-item">

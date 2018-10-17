@@ -17,7 +17,7 @@ class CreateKategorisTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->string('Nama_Kategori');
-            $table->integer('parent_id');
+            $table->string('kategori_id')->default(0);
         });
     }
 

@@ -29,6 +29,7 @@ class SubKategoriController extends Controller
     public function index()
     {
         $subkat = SubKategori::all();
+        $kat = Kategori::all();
         return view('Subkategori.index',compact('subkat','kat'));
     }
 
@@ -50,7 +51,16 @@ class SubKategoriController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+        ],[
+            'name.required' => ':Attribute Tidak Boleh Kosong',
+        ]);
+        $data = new SubKategori;
+        $data->name = $request->name;
+        $data->parent_id = $request->parent_id;
+        $data->save();
+        return response()->json(['success'=>true]);
     }
 
     /**
@@ -72,7 +82,8 @@ class SubKategoriController extends Controller
      */
     public function edit($id)
     {
-        //
+        $subkat = SubKategori::findOrFail($id);
+        return $subkat;
     }
 
     /**
@@ -84,7 +95,25 @@ class SubKategoriController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         $this->validate($request, [
+            'name' => 'required',
+        ],[
+            'name.required' => ':Attribute Tidak Boleh Kosong',
+        ]);
+        $data = SubKategori::findOrfail($id);
+        $data->name = $request->name;
+        $data->parent_id = $request->parent_id;
+        $data->save();
+        return response()->json(['success'=>true]);
+    }
+
+    public function removedata(Request $request)
+    {
+        $subkat = SubKategori::find($request->input('id'));
+        if($subkat->delete())
+        {
+            echo 'Data Deleted';
+        }
     }
 
     /**

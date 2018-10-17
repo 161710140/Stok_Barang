@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 Route::get('subcat',function(){
 	return App\Kategori::with('childs')
-	->where('parent_id',0)
+	->where('kategori_id',0)
 	->get();
 });
 
@@ -52,3 +52,11 @@ Route::post('storekategori', 'KategoriController@store');
 Route::post('kat/edit/{id}', 'KategoriController@update');
 Route::get('kat/getedit/{id}','KategoriController@edit');
 Route::get('ajaxdata/removedatakat','KategoriController@removedata')->name('ajaxdata.removedatakat');
+
+//SubKategori
+Route::resource('subkategori','SubKategoriController');
+Route::get('json_sub','SubKategoriController@json');
+Route::post('storesub', 'SubKategoriController@store');
+Route::post('sub/edit/{id}', 'SubKategoriController@update');
+Route::get('sub/getedit/{id}','SubKategoriController@edit');
+Route::get('ajaxdata/removedatasub','SubKategoriController@removedata')->name('ajaxdata.removedatasub');

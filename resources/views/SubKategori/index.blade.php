@@ -31,7 +31,8 @@
                   <thead>
                      <tr>
                         <th>Id</th>
-                        <th>Main Kategori</th>
+                        <th>Sub Kategori</th>
+                        <th>Id Kategori</th>
                         <th>Action</th>
                      </tr>
                   </thead>
@@ -44,17 +45,18 @@
   </div>
 @endsection
 @push('scripts')
-@include('Kategori.modal')
+@include('SubKategori.modal')
 <script type="text/javascript">
   $(document).ready(function() {
 
     $('#kat_table').DataTable({
       processing: true,
       serverSide: true,
-      ajax: 'json_kate',
+      ajax: 'json_sub',
       columns:[
             { data: 'id', name: 'id' },
-            { data: 'Nama_Kategori', name: 'Nama_Kategori' },
+            { data: 'name', name: 'name' },
+            { data: 'parent_id', name: 'parent_id' },
             { data: 'action', orderable: false, searchable: false }
         ],
       });
@@ -87,7 +89,7 @@
 
               $.ajax({
                 type: "POST",
-                url: "{{url ('/storekategori')}}",
+                url: "{{url ('/storesub')}}",
                 data: new FormData(this),
                // data: $('#student_form').serialize(),
                 contentType: false,
@@ -133,7 +135,7 @@
                //mengupdate data yang telah diedit
               $.ajax({
                 type: "POST",
-                url: "{{url ('kat/edit')}}"+ '/' + $('#id').val(),
+                url: "{{url ('sub/edit')}}"+ '/' + $('#id').val(),
                 // data: $('#student_form').serialize(),
                 data: new FormData(this),
                 contentType: false,
@@ -181,7 +183,7 @@
             var bebas = $(this).data('id');
             $('#form_tampil').html('');
             $.ajax({
-              url:"{{url('kat/getedit')}}" + '/' + bebas,
+              url:"{{url('sub/getedit')}}" + '/' + bebas,
               method:'get',
               data:{id:bebas},
               dataType:'json',
@@ -208,7 +210,7 @@
               if (confirm("Yakin Dihapus ?")) {
 
                 $.ajax({
-                  url: "{{route('ajaxdata.removedatakat')}}",
+                  url: "{{route('ajaxdata.removedatasub')}}",
                   method: "get",
                   data:{id:bebas},
                   success: function(data){

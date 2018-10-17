@@ -18,12 +18,8 @@ class Kategori extends Model
    {
    	 return $this->hasOne('App\Penjualan','Kategori_id');
    }
-   public function parent()
-   {
-       return $this->belongsTo('App\Kategori','parent_id');
-   }
    public function childs()
    {
-      return $this->hasMany('App\Kategori','parent_id');
+      return $this->hasMany('App\SubKategori','parent_id');
    }
 }
